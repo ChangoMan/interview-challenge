@@ -1,11 +1,11 @@
 import { gql } from 'apollo-boost'
 
 export const EPOCHES_QUERY = gql`
-  query epoches(
+  query EpochesAndFilters(
     $where: Epoch_filter
-    $first: Int
-    $orderBy: Epoch_orderBy
-    $orderDirection: OrderDirection
+    $first: Int = 3
+    $orderBy: Epoch_orderBy = "startBlock"
+    $orderDirection: OrderDirection = "asc"
   ) {
     epoches(
       where: $where

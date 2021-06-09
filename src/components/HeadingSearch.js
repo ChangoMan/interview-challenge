@@ -1,7 +1,13 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { Flex, Heading, Image, Input } from 'theme-ui'
 
-function HeadingSearch(props) {
+HeadingSearch.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  searchQuery: PropTypes.string,
+}
+
+function HeadingSearch({ dispatch, searchQuery }) {
   return (
     <Flex sx={{ alignItems: 'center', mb: 8 }}>
       <Heading as="h1">Epochs</Heading>
@@ -17,13 +23,20 @@ function HeadingSearch(props) {
               outline: 'none',
             },
             '&::placeholder': {
-              color: 'text',
+              color: 'rgba(255,255,255,0.48)',
               fontSize: 1,
               fontWeight: 400,
               fontFamily: 'body',
             },
           }}
+          value={searchQuery}
           placeholder="Search"
+          onChange={(e) => {
+            dispatch({
+              type: 'SEARCH',
+              searchQuery: e.target.value,
+            })
+          }}
         />
       </Flex>
     </Flex>

@@ -1,13 +1,13 @@
 import { useQuery } from '@apollo/client'
 import { useReducer } from 'react'
-import { Box, Button, Flex } from 'theme-ui'
+import { Alert, Button, Flex } from 'theme-ui'
 import { withApollo } from '../apollo/client'
 import { EPOCHES_QUERY } from '../apollo/queries'
 import HeadingSearch from '../components/HeadingSearch'
 import Table from '../components/Table'
 
 const initialState = {
-  searchQuery: null,
+  searchQuery: '',
   paginationNumber: 3,
   orderBy: 'startBlock',
   orderDirection: 'asc',
@@ -15,14 +15,45 @@ const initialState = {
 
 function reducer(state, action) {
   switch (action.type) {
-    case 'SET_SEARCH_QUERY':
+    case 'SEARCH':
       return {
         ...state,
         searchQuery: action.searchQuery,
       }
+    case 'SET_ORDER_BY': {
+      let newOrderDirection = 'asc'
+      if (state.orderBy === action.orderBy) {
+        newOrderDirection = state.orderDirection === 'asc' ? 'desc' : 'asc'
+      }
+      return {
+        ...state,
+        orderBy: action.orderBy,
+        orderDirection: newOrderDirection,
+      }
+    }
+    case 'LOAD_MORE':
+      return {
+        ...state,
+        paginationNumber: state.paginationNumber + 3,
+      }
     default:
       throw new Error()
   }
+}
+
+function formatSearchQuery(searchQuery) {
+  if (searchQuery) {
+    const searchQueryInt = parseInt(searchQuery)
+    if (isNaN(searchQueryInt)) {
+      return {
+        startBlock: null,
+      }
+    }
+    return {
+      startBlock: searchQueryInt,
+    }
+  }
+  return {}
 }
 
 const Index = () => {
@@ -32,9 +63,7 @@ const Index = () => {
 
   const { loading, error, data } = useQuery(EPOCHES_QUERY, {
     variables: {
-      // where: {
-      //   startblock: searchQuery,
-      // },
+      where: formatSearchQuery(searchQuery),
       first: paginationNumber,
       orderBy,
       orderDirection,
@@ -42,23 +71,32 @@ const Index = () => {
   })
 
   return (
-    <Box
-      sx={{
-        height: '100vh',
-        backgroundImage: 'url("/images/Background.jpg")',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center top',
-        backgroundSize: 'cover',
-      }}
-    >
-      <Box sx={{ maxWidth: '90%', mx: 'auto', px: 7, py: '100px' }}>
-        <HeadingSearch dispatch={dispatch} />
-        <Table dispatch={dispatch} data={data?.epoches || []} />
-        <Flex sx={{ mt: 9, justifyContent: 'center' }}>
-          <Button>Load More</Button>
-        </Flex>
-      </Box>
-    </Box>
+    <>
+      <HeadingSearch dispatch={dispatch} searchQuery={searchQuery} />
+      {error && <Alert>Error</Alert>}
+      {loading && <Alert>Loading...</Alert>}
+      {!loading && !error && (
+        <>
+          <Table
+            dispatch={dispatch}
+            data={data?.epoches || []}
+            orderBy={orderBy}
+            orderDirection={orderDirection}
+          />
+          <Flex sx={{ mt: 9, justifyContent: 'center' }}>
+            <Button
+              onClick={() => {
+                dispatch({
+                  type: 'LOAD_MORE',
+                })
+              }}
+            >
+              Load More
+            </Button>
+          </Flex>
+        </>
+      )}
+    </>
   )
 }
 

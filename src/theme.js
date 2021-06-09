@@ -1,6 +1,8 @@
 const colors = {
   background: 'rgba(12,10,29,1.0)',
   text: 'rgba(255,255,255,0.96)',
+  tableText: 'rgba(255,255,255,0.64)',
+  arrowButtonHover: 'rgba(111,76,255,0.88)',
 }
 
 const fonts = {
@@ -33,10 +35,13 @@ const globalTheme = {
       px: 7,
       py: 4,
       bg: 'transparent',
-      border: '1px solid rgba(255,255,255,0.25)',
+      border: '1px solid rgba(111,76,255,0.32)',
       fontFamily: 'body',
       fontSize: 1,
       fontWeight: 600,
+      '&:hover': {
+        borderColor: 'rgba(255,255,255,0.32)',
+      },
     },
   },
   colors: colors,
