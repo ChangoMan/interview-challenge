@@ -22,12 +22,23 @@ const space = [
   '128px',
   '256px',
 ]
-const fontWeights = { body: 400, caption: 500, heading: 600, }
+const fontWeights = { body: 400, caption: 500, heading: 600 }
 const borderRadius = { base: space[1] }
 const opacity = { base: 0.72 }
 
 const globalTheme = {
   useCustomProperties: true,
+  buttons: {
+    primary: {
+      px: 7,
+      py: 4,
+      bg: 'transparent',
+      border: '1px solid rgba(255,255,255,0.25)',
+      fontFamily: 'body',
+      fontSize: 1,
+      fontWeight: 600,
+    },
+  },
   colors: colors,
   fonts: fonts,
   space: space,
@@ -55,12 +66,10 @@ const globalTheme = {
     h6: {
       fontWeight: 'heading',
     },
-    p: {
-    },
-    a: {
-    },
-    text: {}
-  }
+    p: {},
+    a: {},
+    text: {},
+  },
 }
 
 export default globalTheme
